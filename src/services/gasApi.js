@@ -56,4 +56,32 @@ export const gasApi = {
     if (json.status === 'error') throw new Error(json.message);
     return json.data;
   }
+
+/**
+   * 刪除小程式
+   */
+  async deleteApp({ token, id }) {
+    const res = await fetch(GAS_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'deleteApp', token, id })
+    });
+    const json = await res.json();
+    if (json.status === 'error') throw new Error(json.message);
+    return json;
+  },
+
+  /**
+   * 更新小程式資料 (編輯 / 隱藏)
+   */
+  async updateApp({ token, app }) {
+    const res = await fetch(GAS_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'updateApp', token, app })
+    });
+    const json = await res.json();
+    if (json.status === 'error') throw new Error(json.message);
+    return json;
+  }
 }
