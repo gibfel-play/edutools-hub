@@ -5,8 +5,8 @@
         H
       </div>
       <div>
-        <h1 class="text-xl font-bold text-slate-800">My Tools Hub</h1>
-        <p class="text-xs text-slate-500">個人微型應用程式庫</p>
+        <h1 class="text-xl font-bold text-slate-800">MJES EduTools Hub</h1>
+        <p class="text-xs text-slate-500">教育應用小工具</p>
       </div>
     </div>
 
