@@ -21,12 +21,11 @@ export const gasApi = {
   },
 
   /**
-   * 上傳小程式
+   * 上傳小程式 / 網址
    */
   async uploadApp({ token, metadata, file }) {
     let contentBase64 = '';
     
-    // 如果有檔案才進行 Base64 編碼
     if (file) {
       contentBase64 = await new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -55,9 +54,9 @@ export const gasApi = {
     const json = await res.json();
     if (json.status === 'error') throw new Error(json.message);
     return json.data;
-  }
+  },
 
-/**
+  /**
    * 刪除小程式
    */
   async deleteApp({ token, id }) {
@@ -84,4 +83,4 @@ export const gasApi = {
     if (json.status === 'error') throw new Error(json.message);
     return json;
   }
-}
+};
