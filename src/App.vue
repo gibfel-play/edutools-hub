@@ -26,6 +26,20 @@
       </div>
     </main>
 
+
+    <!-- 頁尾資訊 -->
+    <footer class="bg-white border-t border-slate-200 py-4 text-center text-sm text-slate-500">
+      網站建置維護：新北市泰山區明志國小 曾旭良
+    </footer>
+
+    <!-- App Viewer Sandbox Modal -->
+    <AppViewer
+      v-if="currentApp"
+      :app="currentApp"
+      @close="currentApp = null"
+    />
+
+
     <AppViewer
       v-if="currentApp"
       :app="currentApp"
