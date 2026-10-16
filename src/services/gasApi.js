@@ -24,19 +24,24 @@ export const gasApi = {
    * 上傳小程式
    */
   async uploadApp({ token, metadata, file }) {
-    const contentBase64 = await new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result.split(',')[1]);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
+    let contentBase64 = '';
+    
+    // 如果有檔案才進行 Base64 編碼
+    if (file) {
+      contentBase64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
 
     const payload = {
       action: 'uploadApp',
       token,
       metadata,
       file: {
-        name: file.name,
+        name: file ? file.name : '',
         contentBase64
       }
     };
@@ -51,4 +56,3 @@ export const gasApi = {
     if (json.status === 'error') throw new Error(json.message);
     return json.data;
   }
-};

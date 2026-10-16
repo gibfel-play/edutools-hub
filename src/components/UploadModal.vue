@@ -2,8 +2,26 @@
   <div class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl p-6 border border-slate-200">
       <div class="flex justify-between items-center mb-6">
-        <h3 class="text-lg font-bold text-slate-800">上傳新小程式</h3>
+        <h3 class="text-lg font-bold text-slate-800">新增小程式 / 連結</h3>
         <button @click="$emit('close')" class="text-slate-400 hover:text-slate-600 cursor-pointer">✕</button>
+      </div>
+
+      <!-- 類型切換頁籤 -->
+      <div class="flex bg-slate-100 p-1 rounded-xl mb-4">
+        <button
+          type="button"
+          @click="form.type = 'file'"
+          :class="['flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer', form.type === 'file' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500']"
+        >
+          上傳 HTML 檔案
+        </button>
+        <button
+          type="button"
+          @click="form.type = 'link'"
+          :class="['flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer', form.type === 'link' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500']"
+        >
+          新增網站連結
+        </button>
       </div>
 
       <form @submit.prevent="handleSubmit" class="space-y-4">
@@ -19,12 +37,12 @@
         </div>
 
         <div>
-          <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">程式名稱</label>
+          <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">名稱</label>
           <input
             v-model="form.title"
             type="text"
             required
-            placeholder="例如：單位轉換器"
+            placeholder="例如：單位轉換器 或 網站名稱"
             class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-indigo-500"
           />
         </div>
@@ -39,14 +57,26 @@
               class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-indigo-500"
             />
           </div>
-          <div>
+
+          <!-- 動態切換：HTML 檔案選擇器 OR 網址輸入框 -->
+          <div v-if="form.type === 'file'">
             <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">HTML 檔案</label>
             <input
               type="file"
               accept=".html"
-              required
+              :required="form.type === 'file'"
               @change="handleFileChange"
               class="w-full text-xs text-slate-500 file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100"
+            />
+          </div>
+          <div v-else>
+            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">網站網址 (URL)</label>
+            <input
+              v-model="form.url"
+              type="url"
+              :required="form.type === 'link'"
+              placeholder="https://example.com"
+              class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-indigo-500"
             />
           </div>
         </div>
@@ -56,7 +86,7 @@
           <textarea
             v-model="form.description"
             rows="3"
-            placeholder="說明此工具的功能與用途..."
+            placeholder="說明此工具/網站的功能與用途..."
             class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-indigo-500"
           ></textarea>
         </div>
@@ -74,7 +104,7 @@
             :disabled="uploading"
             class="px-5 py-2.5 text-sm font-medium bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-sm transition-all disabled:opacity-50 cursor-pointer"
           >
-            {{ uploading ? '上傳中...' : '確認上傳' }}
+            {{ uploading ? '處理中...' : '確認新增' }}
           </button>
         </div>
       </form>
@@ -92,9 +122,11 @@ const uploading = ref(false);
 const selectedFile = ref(null);
 
 const form = reactive({
+  type: 'file', // 'file' 或 'link'
   token: '',
   title: '',
   category: '一般工具',
+  url: '',
   description: ''
 });
 
@@ -103,25 +135,27 @@ const handleFileChange = (e) => {
 };
 
 const handleSubmit = async () => {
-  if (!selectedFile.value) return;
+  if (form.type === 'file' && !selectedFile.value) return;
   uploading.value = true;
 
   try {
     await gasApi.uploadApp({
       token: form.token,
       metadata: {
+        type: form.type,
         title: form.title,
         category: form.category,
+        url: form.url,
         description: form.description
       },
-      file: selectedFile.value
+      file: form.type === 'file' ? selectedFile.value : null
     });
 
-    alert('上傳成功！');
+    alert('新增成功！');
     emit('uploaded');
     emit('close');
   } catch (err) {
-    alert('上傳失敗：' + err.message);
+    alert('新增失敗：' + err.message);
   } finally {
     uploading.value = false;
   }
