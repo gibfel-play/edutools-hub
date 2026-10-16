@@ -56,3 +56,4 @@ export const gasApi = {
     if (json.status === 'error') throw new Error(json.message);
     return json.data;
   }
+}
