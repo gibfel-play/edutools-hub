@@ -17,34 +17,17 @@
           v-for="app in filteredApps"
           :key="app.id"
           :app="app"
-          @run="currentApp = $event"
         />
       </div>
 
       <div v-else class="text-center py-20 bg-white rounded-2xl border border-dashed border-slate-300">
-        <p class="text-slate-500 font-medium">目前還沒有上傳小程式，或找不到符合的搜尋結果。</p>
+        <p class="text-slate-500 font-medium">目前還沒有小程式，或找不到符合的搜尋結果。</p>
       </div>
     </main>
 
-
-    <!-- 頁尾資訊 -->
     <footer class="bg-white border-t border-slate-200 py-4 text-center text-sm text-slate-500">
-      網站建置維護：新北市泰山區明志國小 曾旭良
+      網站建置維護：明志國小曾旭良
     </footer>
-
-    <!-- App Viewer Sandbox Modal -->
-    <AppViewer
-      v-if="currentApp"
-      :app="currentApp"
-      @close="currentApp = null"
-    />
-
-
-    <AppViewer
-      v-if="currentApp"
-      :app="currentApp"
-      @close="currentApp = null"
-    />
 
     <UploadModal
       v-if="showUploadModal"
@@ -58,7 +41,6 @@
 import { ref, computed, onMounted } from 'vue';
 import Navbar from './components/Navbar.vue';
 import AppCard from './components/AppCard.vue';
-import AppViewer from './components/AppViewer.vue';
 import UploadModal from './components/UploadModal.vue';
 import { gasApi } from './services/gasApi';
 
@@ -66,7 +48,6 @@ const apps = ref([]);
 const loading = ref(true);
 const searchQuery = ref('');
 const selectedCategory = ref('');
-const currentApp = ref(null);
 const showUploadModal = ref(false);
 
 const fetchApps = async () => {

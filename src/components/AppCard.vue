@@ -17,23 +17,33 @@
       </p>
     </div>
 
-    <button
-      @click="$emit('run', app)"
+    <!-- 一律以新分頁開啟 Target URL -->
+    <a
+      :href="targetUrl"
+      target="_blank"
+      rel="noopener noreferrer"
       class="w-full py-2.5 bg-slate-100 group-hover:bg-indigo-600 text-slate-700 group-hover:text-white font-medium text-sm rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer"
     >
-      <span>開啟應用</span>
-      <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-      </svg>
-    </button>
+      <span>開啟工具 ↗</span>
+    </a>
   </div>
 </template>
 
 <script setup>
-defineProps({
+import { computed } from 'vue';
+import { GAS_API_URL } from '../services/gasApi';
+
+const props = defineProps({
   app: Object
 });
-defineEmits(['run']);
+
+// 計算要開啟的 URL：若為 http 開頭則直接開啟，否則透過 GAS getAppContent 網址開啟 HTML 檔案
+const targetUrl = computed(() => {
+  if (props.app.fileId && (props.app.fileId.startsWith('http://') || props.app.fileId.startsWith('https://'))) {
+    return props.app.fileId;
+  }
+  return `${GAS_API_URL}?action=getAppContent&fileId=${props.app.fileId}`;
+});
 
 const formatDate = (dateStr) => {
   if (!dateStr) return '';

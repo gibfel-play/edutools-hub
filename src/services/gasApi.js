@@ -1,5 +1,5 @@
 // 請替換為您第一階段部署獲得的 Web App URL
-const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbyCveNdjufvdfmnjUCWUbkqTdDV7yxHWG5SD79mNnBPD_C9AGRa6R5g9SznoMlAqCgo/exec';
+export const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbyCveNdjufvdfmnjUCWUbkqTdDV7yxHWG5SD79mNnBPD_C9AGRa6R5g9SznoMlAqCgo/exec';
 
 export const gasApi = {
   /**
