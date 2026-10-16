@@ -1,17 +1,12 @@
-<AdminModal
-  v-if="showAdminModal"
-  :apps="apps"
-  @close="showAdminModal = false"
-  @refresh="fetchApps"
-/>
-
 <template>
   <div class="min-h-screen bg-slate-50 font-sans text-slate-900 flex flex-col">
+    <!-- 頂部導覽列：確保有傳入 @openAdmin 與 @openUpload 事件 -->
     <Navbar
       v-model:searchQuery="searchQuery"
       v-model:selectedCategory="selectedCategory"
       :categories="categories"
       @openUpload="showUploadModal = true"
+      @openAdmin="showAdminModal = true"
     />
 
     <main class="flex-1 max-w-7xl w-full mx-auto p-6">
@@ -33,13 +28,22 @@
     </main>
 
     <footer class="bg-white border-t border-slate-200 py-4 text-center text-sm text-slate-500">
-      網站建置維護：新北市泰山區明志國小 曾旭良
+      網站建置維護：明志國小曾旭良
     </footer>
 
+    <!-- 上傳彈窗 -->
     <UploadModal
       v-if="showUploadModal"
       @close="showUploadModal = false"
       @uploaded="fetchApps"
+    />
+
+    <!-- 管理後台彈窗 -->
+    <AdminModal
+      v-if="showAdminModal"
+      :apps="apps"
+      @close="showAdminModal = false"
+      @refresh="fetchApps"
     />
   </div>
 </template>
@@ -49,13 +53,17 @@ import { ref, computed, onMounted } from 'vue';
 import Navbar from './components/Navbar.vue';
 import AppCard from './components/AppCard.vue';
 import UploadModal from './components/UploadModal.vue';
+import AdminModal from './components/AdminModal.vue';
 import { gasApi } from './services/gasApi';
 
 const apps = ref([]);
 const loading = ref(true);
 const searchQuery = ref('');
 const selectedCategory = ref('');
+
+// 彈窗開關變數
 const showUploadModal = ref(false);
+const showAdminModal = ref(false);
 
 const fetchApps = async () => {
   loading.value = true;

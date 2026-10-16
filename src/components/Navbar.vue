@@ -34,21 +34,24 @@
       </select>
     </div>
 
-    <button
-      @click="$emit('openUpload')"
-      class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm rounded-xl shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 shrink-0 cursor-pointer"
-    >
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-      </svg>
-      上傳小程式
-    </button>
-   <button
-    @click="$emit('openAdmin')"
-    class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-sm rounded-xl transition-all flex items-center justify-center gap-1 shrink-0 cursor-pointer"
-  >
-  ⚙️ 管理
-  </button>
+    <div class="flex items-center gap-2">
+      <button
+        @click="$emit('openAdmin')"
+        class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-sm rounded-xl transition-all flex items-center justify-center gap-1 shrink-0 cursor-pointer"
+      >
+        ⚙️ 管理
+      </button>
+
+      <button
+        @click="$emit('openUpload')"
+        class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm rounded-xl shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 shrink-0 cursor-pointer"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+        上傳小程式
+      </button>
+    </div>
   </header>
 </template>
 
@@ -58,5 +61,5 @@ defineProps({
   selectedCategory: String,
   categories: Array
 });
-defineEmits(['update:searchQuery', 'update:selectedCategory', 'openUpload']);
+defineEmits(['update:searchQuery', 'update:selectedCategory', 'openUpload', 'openAdmin']);
 </script>
