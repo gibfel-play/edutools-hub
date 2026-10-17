@@ -28,7 +28,7 @@
     </main>
 
     <footer class="bg-white border-t border-slate-200 py-4 text-center text-sm text-slate-500">
-      網站建置維護：明志國小曾旭良
+      網站建置維護：新北市泰山區明志國小 曾旭良
     </footer>
 
     <!-- 上傳彈窗 -->
