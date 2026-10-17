@@ -3,13 +3,27 @@ export const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbyCveNdjufvd
 
 export const gasApi = {
   /**
-   * 獲取所有公開的小程式清單
+   * 獲取公開的小程式清單
    */
   async getApps() {
     const res = await fetch(`${GAS_API_URL}?action=getApps`);
     const json = await res.json();
     if (json.status === 'error') throw new Error(json.message);
     return json.data || json;
+  },
+
+  /**
+   * 管理者獲取包含隱藏檔案的完整清單
+   */
+  async getAllAppsAdmin(token) {
+    const res = await fetch(GAS_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'getAllAppsAdmin', token })
+    });
+    const json = await res.json();
+    if (json.status === 'error') throw new Error(json.message);
+    return json.data;
   },
 
   /**
@@ -71,7 +85,7 @@ export const gasApi = {
   },
 
   /**
-   * 更新小程式資料 (編輯 / 隱藏)
+   * 更新小程式資料 (編輯標題、說明、分類、狀態/隱藏)
    */
   async updateApp({ token, app }) {
     const res = await fetch(GAS_API_URL, {
