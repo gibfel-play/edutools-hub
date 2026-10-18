@@ -13,6 +13,21 @@ export const gasApi = {
   },
 
   /**
+   * 紀錄點擊次數 (+1)
+   */
+  async trackClick(id) {
+    try {
+      await fetch(GAS_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'trackClick', id })
+      });
+    } catch (err) {
+      console.error('Track click failed:', err);
+    }
+  },
+
+  /**
    * 管理者獲取包含隱藏檔案的完整清單
    */
   async getAllAppsAdmin(token) {
@@ -85,7 +100,7 @@ export const gasApi = {
   },
 
   /**
-   * 更新小程式資料 (編輯標題、說明、分類、狀態/隱藏)
+   * 更新小程式資料
    */
   async updateApp({ token, app }) {
     const res = await fetch(GAS_API_URL, {
