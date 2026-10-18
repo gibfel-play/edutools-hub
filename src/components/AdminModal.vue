@@ -27,7 +27,6 @@
         <div v-if="loading" class="text-center py-10 text-slate-400">資料載入中...</div>
         
         <div v-else v-for="app in appList" :key="app.id" class="p-4 bg-slate-50 rounded-xl border border-slate-200 flex flex-col gap-3">
-          <!-- 項目標頭與狀態標籤 -->
           <div class="flex items-center justify-between border-b border-slate-200/60 pb-2">
             <span class="text-xs text-slate-400">ID: {{ app.id }}</span>
             <span :class="['px-2 py-0.5 text-xs font-semibold rounded-md', app.status === 'hidden' ? 'bg-amber-100 text-amber-700 border border-amber-200' : 'bg-emerald-100 text-emerald-700 border border-emerald-200']">
@@ -46,12 +45,23 @@
               />
             </div>
             <div>
-              <label class="block text-xs font-semibold text-slate-500 mb-1">分類</label>
+              <label class="block text-xs font-semibold text-slate-500 mb-1">分類標籤</label>
               <input
                 v-model="app.category"
                 type="text"
+                list="category-options"
+                placeholder="選擇或直接輸入分類"
                 class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-indigo-500"
               />
+              <datalist id="category-options">
+                <option value="英語學習"></option>
+                <option value="行政輔助"></option>
+                <option value="教學輔助"></option>
+                <option value="評量測驗"></option>
+                <option value="簡報圖表"></option>
+                <option value="生活工具"></option>
+                <option value="一般工具"></option>
+              </datalist>
             </div>
             <div>
               <label class="block text-xs font-semibold text-slate-500 mb-1">說明描述</label>
@@ -101,7 +111,6 @@ const loading = ref(false);
 const token = ref('');
 const appList = ref([]);
 
-// 登入並獲取全量清單（含隱藏檔）
 const handleLogin = async () => {
   if (!token.value) return;
   loading.value = true;
@@ -116,7 +125,6 @@ const handleLogin = async () => {
   }
 };
 
-// 儲存修改資訊 (名稱、說明、分類)
 const saveApp = async (app) => {
   try {
     await gasApi.updateApp({
@@ -130,7 +138,6 @@ const saveApp = async (app) => {
   }
 };
 
-// 切換隱藏 / 顯示
 const toggleStatus = async (app) => {
   const newStatus = app.status === 'hidden' ? 'published' : 'hidden';
   try {
@@ -145,7 +152,6 @@ const toggleStatus = async (app) => {
   }
 };
 
-// 刪除項目
 const handleDelete = async (id) => {
   if (!confirm('確定要永久刪除此項目嗎？')) return;
   try {

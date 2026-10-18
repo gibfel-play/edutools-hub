@@ -3,7 +3,7 @@
     <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl p-6 border border-slate-200">
       <div class="flex justify-between items-center mb-6">
         <h3 class="text-lg font-bold text-slate-800">新增小程式 / 連結</h3>
-        <button @click="$emit('close')" class="text-slate-400 hover:text-slate-600 cursor-pointer">✕</button>
+        <button @click="$emit('close')" class="text-slate-400 hover:text-slate-600 cursor-pointer text-xl">✕</button>
       </div>
 
       <!-- 類型切換頁籤 -->
@@ -42,19 +42,30 @@
             v-model="form.title"
             type="text"
             required
-            placeholder="例如：單位轉換器 或 網站名稱"
+            placeholder="例如：單位轉換器 或 教育部網站"
             class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-indigo-500"
           />
         </div>
 
         <div class="grid grid-cols-2 gap-3">
+          <!-- 分類選單 -->
           <div>
-            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">分類</label>
+            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">分類標籤</label>
+            <select
+              v-model="selectedCategoryOption"
+              class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-indigo-500 text-slate-700 mb-2"
+            >
+              <option v-for="cat in presetCategories" :key="cat" :value="cat">{{ cat }}</option>
+              <option value="custom">＋ 自訂新分類...</option>
+            </select>
+            <!-- 選擇自訂時顯示輸入框 -->
             <input
-              v-model="form.category"
+              v-if="selectedCategoryOption === 'custom'"
+              v-model="customCategory"
               type="text"
-              placeholder="例如：行政輔助"
-              class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-indigo-500"
+              required
+              placeholder="請輸入自訂分類名稱"
+              class="w-full px-3.5 py-2 bg-slate-50 border border-indigo-300 rounded-xl text-xs focus:outline-none focus:border-indigo-500"
             />
           </div>
 
@@ -113,7 +124,7 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue';
+import { reactive, ref, computed } from 'vue';
 import { gasApi } from '../services/gasApi';
 
 const emit = defineEmits(['close', 'uploaded']);
@@ -121,13 +132,34 @@ const emit = defineEmits(['close', 'uploaded']);
 const uploading = ref(false);
 const selectedFile = ref(null);
 
+// 預設教育常用分類清單
+const presetCategories = [
+  '英語學習',
+  '行政輔助',
+  '教學輔助',
+  '評量測驗',
+  '簡報圖表',
+  '生活工具',
+  '一般工具'
+];
+
+const selectedCategoryOption = ref('行政輔助');
+const customCategory = ref('');
+
 const form = reactive({
-  type: 'file', // 'file' 或 'link'
+  type: 'file',
   token: '',
   title: '',
-  category: '一般工具',
   url: '',
   description: ''
+});
+
+// 計算最終選擇的分類名稱
+const finalCategory = computed(() => {
+  if (selectedCategoryOption.value === 'custom') {
+    return customCategory.value.trim() || '未分類';
+  }
+  return selectedCategoryOption.value;
 });
 
 const handleFileChange = (e) => {
@@ -144,7 +176,7 @@ const handleSubmit = async () => {
       metadata: {
         type: form.type,
         title: form.title,
-        category: form.category,
+        category: finalCategory.value,
         url: form.url,
         description: form.description
       },
