@@ -13,7 +13,25 @@ export const gasApi = {
   },
 
   /**
-   * 紀錄點擊次數 (+1)
+   * 追蹤頁面瀏覽 (+1) 並取得今日與累計瀏覽數
+   */
+  async trackPageVisit() {
+    try {
+      const res = await fetch(GAS_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'trackPageVisit' })
+      });
+      const json = await res.json();
+      if (json.status === 'success') return json.data;
+    } catch (err) {
+      console.error('Track page visit failed:', err);
+    }
+    return { today: 0, total: 0 };
+  },
+
+  /**
+   * 紀錄小程式點擊次數 (+1)
    */
   async trackClick(id) {
     try {

@@ -29,9 +29,16 @@
       </div>
     </main>
 
-    <!-- 頁尾維護資訊 -->
-    <footer class="bg-white border-t border-slate-200 py-4 text-center text-sm text-slate-500">
-      網站建置維護：新北市泰山區明志國小 曾旭良
+    <!-- 頁尾維護與瀏覽人次資訊 -->
+    <footer class="bg-white border-t border-slate-200 py-4 text-center text-sm text-slate-500 flex flex-col sm:flex-row items-center justify-between px-6 max-w-7xl w-full mx-auto gap-2">
+      <div>
+        網站建置維護：新北市泰山區明志國小 曾旭良
+      </div>
+      <div class="flex items-center gap-4 text-xs bg-slate-100 px-3 py-1.5 rounded-xl text-slate-600">
+        <span>👀 今日瀏覽：<strong class="text-indigo-600 font-bold">{{ siteStats.today }}</strong> 次</span>
+        <span class="text-slate-300">|</span>
+        <span>📈 累計瀏覽：<strong class="text-indigo-600 font-bold">{{ siteStats.total }}</strong> 次</span>
+      </div>
     </footer>
 
     <!-- 上傳彈窗 -->
@@ -63,7 +70,9 @@ const apps = ref([]);
 const loading = ref(true);
 const searchQuery = ref('');
 const selectedCategory = ref('');
-const sortBy = ref('newest'); // 預設排序方式：最新上架 ('newest', 'popular', 'oldest')
+const sortBy = ref('newest');
+
+const siteStats = ref({ today: 0, total: 0 });
 
 const showUploadModal = ref(false);
 const showAdminModal = ref(false);
@@ -79,14 +88,21 @@ const fetchApps = async () => {
   }
 };
 
-onMounted(fetchApps);
+const initSiteStats = async () => {
+  const stats = await gasApi.trackPageVisit();
+  if (stats) siteStats.value = stats;
+};
+
+onMounted(() => {
+  fetchApps();
+  initSiteStats();
+});
 
 const categories = computed(() => {
   const set = new Set(apps.value.map(a => a.category).filter(Boolean));
   return Array.from(set);
 });
 
-// 關鍵字搜尋、分類過濾與動態排序
 const filteredApps = computed(() => {
   let result = apps.value.filter(app => {
     const matchesSearch = ((app.title || '') + (app.description || '')).toLowerCase().includes(searchQuery.value.toLowerCase());
@@ -94,16 +110,12 @@ const filteredApps = computed(() => {
     return matchesSearch && matchesCategory;
   });
 
-  // 排序處理
   return result.sort((a, b) => {
     if (sortBy.value === 'popular') {
-      // 熱度排序：點擊數由多到少
       return (Number(b.clicks) || 0) - (Number(a.clicks) || 0);
     } else if (sortBy.value === 'oldest') {
-      // 依建立時間：由舊到新
       return new Date(a.createdAt || 0) - new Date(b.createdAt || 0);
     } else {
-      // 最新上架 (預設)：由新到舊
       return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
     }
   });
