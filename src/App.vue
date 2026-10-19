@@ -1,14 +1,16 @@
 <template>
   <div class="min-h-screen bg-slate-50 font-sans text-slate-900 flex flex-col">
-    <!-- 頂部導覽列：確保有傳入 @openAdmin 與 @openUpload 事件 -->
+    <!-- 頂部導覽列 -->
     <Navbar
       v-model:searchQuery="searchQuery"
       v-model:selectedCategory="selectedCategory"
+      v-model:sortBy="sortBy"
       :categories="categories"
       @openUpload="showUploadModal = true"
       @openAdmin="showAdminModal = true"
     />
 
+    <!-- 主要內容區 -->
     <main class="flex-1 max-w-7xl w-full mx-auto p-6">
       <div v-if="loading" class="flex justify-center items-center py-20">
         <div class="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
@@ -27,6 +29,7 @@
       </div>
     </main>
 
+    <!-- 頁尾維護資訊 -->
     <footer class="bg-white border-t border-slate-200 py-4 text-center text-sm text-slate-500">
       網站建置維護：新北市泰山區明志國小 曾旭良
     </footer>
@@ -60,8 +63,8 @@ const apps = ref([]);
 const loading = ref(true);
 const searchQuery = ref('');
 const selectedCategory = ref('');
+const sortBy = ref('newest'); // 預設排序方式：最新上架 ('newest', 'popular', 'oldest')
 
-// 彈窗開關變數
 const showUploadModal = ref(false);
 const showAdminModal = ref(false);
 
@@ -83,11 +86,26 @@ const categories = computed(() => {
   return Array.from(set);
 });
 
+// 關鍵字搜尋、分類過濾與動態排序
 const filteredApps = computed(() => {
-  return apps.value.filter(app => {
+  let result = apps.value.filter(app => {
     const matchesSearch = ((app.title || '') + (app.description || '')).toLowerCase().includes(searchQuery.value.toLowerCase());
     const matchesCategory = !selectedCategory.value || app.category === selectedCategory.value;
     return matchesSearch && matchesCategory;
+  });
+
+  // 排序處理
+  return result.sort((a, b) => {
+    if (sortBy.value === 'popular') {
+      // 熱度排序：點擊數由多到少
+      return (Number(b.clicks) || 0) - (Number(a.clicks) || 0);
+    } else if (sortBy.value === 'oldest') {
+      // 依建立時間：由舊到新
+      return new Date(a.createdAt || 0) - new Date(b.createdAt || 0);
+    } else {
+      // 最新上架 (預設)：由新到舊
+      return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+    }
   });
 });
 </script>
