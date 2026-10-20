@@ -14,23 +14,10 @@
         </div>
       </div>
 
-      <!-- 標題與 QR Code 按鈕 -->
-      <div class="flex items-start justify-between gap-2 mb-2">
-        <h3 class="text-lg font-bold text-slate-800 group-hover:text-indigo-600 transition-colors line-clamp-1 flex-1">
-          {{ app.title }}
-        </h3>
-        
-        <!-- QR Code 按鈕 (發送事件給主頁面彈窗) -->
-        <button
-          @click.stop="$emit('openQr', app)"
-          class="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all cursor-pointer shrink-0"
-          title="顯示 QR Code 供掃描"
-        >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-4v-4m0 4h2m-4-11h.01M4 4h6v6H4V4zm10 0h6v6h-6V4zM4 14h6v6H4v-6z"/>
-          </svg>
-        </button>
-      </div>
+      <!-- 標題區域 -->
+      <h3 class="text-lg font-bold text-slate-800 group-hover:text-indigo-600 transition-colors line-clamp-1 mb-2">
+        {{ app.title }}
+      </h3>
       
       <p class="text-slate-600 text-sm line-clamp-2 mb-4 leading-relaxed">
         {{ app.description || '暫無描述資訊' }}
@@ -42,7 +29,9 @@
         <span>使用次數：<strong class="text-slate-600 font-semibold">{{ currentClicks }}</strong> 次</span>
       </div>
 
+      <!-- 操作按鈕列：開啟、下載、QR Code 放在同一橫排 -->
       <div class="flex items-center gap-2">
+        <!-- 開啟工具 / 網站 -->
         <a
           :href="targetUrl"
           target="_blank"
@@ -53,6 +42,7 @@
           <span>開啟 ↗</span>
         </a>
 
+        <!-- 下載按鈕 (僅對 HTML 小程式顯示) -->
         <button
           v-if="!isExternalLink"
           @click="downloadApp"
@@ -65,6 +55,17 @@
           </svg>
           <div v-else class="w-4 h-4 border-2 border-slate-600 border-t-transparent rounded-full animate-spin"></div>
           <span class="text-xs font-semibold">下載</span>
+        </button>
+
+        <!-- QR Code 按鈕 -->
+        <button
+          @click.stop="$emit('openQr', app)"
+          class="p-2.5 bg-slate-100 hover:bg-indigo-50 text-slate-600 hover:text-indigo-600 rounded-xl transition-all cursor-pointer shrink-0 flex items-center justify-center"
+          title="顯示 QR Code 供掃描"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-4v-4m0 4h2m-4-11h.01M4 4h6v6H4V4zm10 0h6v6h-6V4zM4 14h6v6H4v-6z"/>
+          </svg>
         </button>
       </div>
     </div>
