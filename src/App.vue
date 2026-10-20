@@ -21,6 +21,7 @@
           v-for="app in filteredApps"
           :key="app.id"
           :app="app"
+          @openQr="handleOpenQr"
         />
       </div>
 
@@ -55,6 +56,14 @@
       @close="showAdminModal = false"
       @refresh="fetchApps"
     />
+
+    <!-- 獨立全螢幕 QR Code 彈窗 (頂層掛載) -->
+    <QrModal
+      v-if="activeQrApp"
+      :app="activeQrApp"
+      :gasApiUrl="GAS_API_URL"
+      @close="activeQrApp = null"
+    />
   </div>
 </template>
 
@@ -64,7 +73,8 @@ import Navbar from './components/Navbar.vue';
 import AppCard from './components/AppCard.vue';
 import UploadModal from './components/UploadModal.vue';
 import AdminModal from './components/AdminModal.vue';
-import { gasApi } from './services/gasApi';
+import QrModal from './components/QrModal.vue';
+import { GAS_API_URL, gasApi } from './services/gasApi';
 
 const apps = ref([]);
 const loading = ref(true);
@@ -76,6 +86,7 @@ const siteStats = ref({ today: 0, total: 0 });
 
 const showUploadModal = ref(false);
 const showAdminModal = ref(false);
+const activeQrApp = ref(null); // 當前要顯示 QR Code 的小程式
 
 const fetchApps = async () => {
   loading.value = true;
@@ -91,6 +102,10 @@ const fetchApps = async () => {
 const initSiteStats = async () => {
   const stats = await gasApi.trackPageVisit();
   if (stats) siteStats.value = stats;
+};
+
+const handleOpenQr = (app) => {
+  activeQrApp.value = app;
 };
 
 onMounted(() => {
