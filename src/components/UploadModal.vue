@@ -26,12 +26,12 @@
 
       <form @submit.prevent="handleSubmit" class="space-y-4">
         <div>
-          <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">管理密碼</label>
+          <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">上傳密碼 / 管理密碼</label>
           <input
             v-model="form.token"
             type="password"
             required
-            placeholder="請輸入管理上傳金鑰"
+            placeholder="請輸入您專屬的上傳密碼"
             class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-indigo-500"
           />
         </div>
@@ -58,7 +58,6 @@
               <option v-for="cat in presetCategories" :key="cat" :value="cat">{{ cat }}</option>
               <option value="custom">＋ 自訂新分類...</option>
             </select>
-            <!-- 選擇自訂時顯示輸入框 -->
             <input
               v-if="selectedCategoryOption === 'custom'"
               v-model="customCategory"
@@ -132,9 +131,7 @@ const emit = defineEmits(['close', 'uploaded']);
 const uploading = ref(false);
 const selectedFile = ref(null);
 
-// 預設教育常用分類清單
 const presetCategories = [
-  '英語學習',
   '行政輔助',
   '教學輔助',
   '評量測驗',
@@ -154,7 +151,6 @@ const form = reactive({
   description: ''
 });
 
-// 計算最終選擇的分類名稱
 const finalCategory = computed(() => {
   if (selectedCategoryOption.value === 'custom') {
     return customCategory.value.trim() || '未分類';
