@@ -132,15 +132,14 @@ const uploading = ref(false);
 const selectedFile = ref(null);
 
 const presetCategories = [
+  '數學學習',
+  '英語學習',
   '行政輔助',
-  '教學輔助',
-  '評量測驗',
-  '簡報圖表',
-  '生活工具',
-  '一般工具'
+  '圖像工具',
+  '網站連結'
 ];
 
-const selectedCategoryOption = ref('行政輔助');
+const selectedCategoryOption = ref('數學學習');
 const customCategory = ref('');
 
 const form = reactive({
